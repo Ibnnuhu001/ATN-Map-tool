@@ -1,0 +1,1500 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Meme Coin Attention Map · Mustachain</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap');
+
+  :root {
+    --bg: #0a0a0f;
+    --surface: #111118;
+    --surface2: #18181f;
+    --border: #242430;
+    --border2: #2e2e3d;
+    --gold: #f5c842;
+    --gold-dim: #c49e2a;
+    --green: #3ddc84;
+    --red: #ff4d4d;
+    --amber: #ff9500;
+    --blue: #4da6ff;
+    --text: #e8e8f0;
+    --muted: #7a7a90;
+    --muted2: #55556a;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 15px;
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  /* ── HEADER ── */
+  .app-header {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 18px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .logo {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .logo-main {
+    font-family: 'Space Mono', monospace;
+    font-size: 13px;
+    color: var(--gold);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+  .logo-sub {
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.08em;
+  }
+  .header-badge {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    border: 1px solid var(--border2);
+    padding: 4px 10px;
+    border-radius: 20px;
+    letter-spacing: 0.1em;
+  }
+
+  /* ── NAV TABS ── */
+  .tab-nav {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    gap: 0;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .tab-nav::-webkit-scrollbar { display: none; }
+  .tab-btn {
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    color: var(--muted);
+    cursor: pointer;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    padding: 14px 20px;
+    text-transform: uppercase;
+    transition: all 0.18s;
+    white-space: nowrap;
+  }
+  .tab-btn:hover { color: var(--text); }
+  .tab-btn.active {
+    border-bottom-color: var(--gold);
+    color: var(--gold);
+  }
+
+  /* ── LAYOUT ── */
+  .app-body { max-width: 900px; margin: 0 auto; padding: 28px 20px 60px; }
+
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+
+  /* ── SECTION HEADER ── */
+  .section-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    color: var(--gold);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  .section-title {
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 6px;
+    letter-spacing: -0.02em;
+  }
+  .section-desc {
+    color: var(--muted);
+    font-size: 13px;
+    margin-bottom: 24px;
+    max-width: 560px;
+  }
+
+  /* ── CARDS ── */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 14px;
+  }
+  .card-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+  .step-num {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    color: var(--bg);
+    background: var(--gold);
+    border-radius: 4px;
+    width: 26px;
+    height: 26px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+  .card-title {
+    font-size: 15px;
+    font-weight: 600;
+  }
+  .card-time {
+    margin-left: auto;
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    color: var(--gold-dim);
+    border: 1px solid var(--border2);
+    padding: 3px 8px;
+    border-radius: 20px;
+  }
+
+  /* ── CHECKLIST ITEMS ── */
+  .check-list { display: flex; flex-direction: column; gap: 8px; }
+  .check-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 10px 12px;
+    border-radius: 7px;
+    border: 1px solid var(--border);
+    background: var(--surface2);
+    cursor: pointer;
+    transition: border-color 0.15s, background 0.15s;
+    user-select: none;
+  }
+  .check-item:hover { border-color: var(--border2); }
+  .check-item.checked {
+    border-color: var(--green);
+    background: rgba(61, 220, 132, 0.06);
+  }
+  .check-item.flagged {
+    border-color: var(--red);
+    background: rgba(255, 77, 77, 0.06);
+  }
+  .check-box {
+    width: 18px;
+    height: 18px;
+    border: 2px solid var(--border2);
+    border-radius: 4px;
+    flex-shrink: 0;
+    margin-top: 1px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s;
+  }
+  .check-item.checked .check-box {
+    background: var(--green);
+    border-color: var(--green);
+  }
+  .check-item.flagged .check-box {
+    background: var(--red);
+    border-color: var(--red);
+  }
+  .check-box::after {
+    content: '';
+    display: none;
+    width: 5px;
+    height: 9px;
+    border: 2px solid #000;
+    border-top: none;
+    border-left: none;
+    transform: rotate(45deg) translateY(-1px);
+  }
+  .check-item.checked .check-box::after,
+  .check-item.flagged .check-box::after { display: block; }
+  .check-text { font-size: 13px; flex: 1; line-height: 1.45; }
+  .check-text strong { color: var(--text); font-weight: 600; }
+  .check-text span { color: var(--muted); }
+
+  /* ── KEYWORDS GRID ── */
+  .kw-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 14px;
+  }
+  .kw-tag {
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    padding: 5px 12px;
+    border-radius: 5px;
+    border: 1px solid var(--border2);
+    background: var(--surface2);
+    color: var(--text);
+    cursor: pointer;
+    transition: all 0.15s;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .kw-tag:hover { border-color: var(--gold-dim); color: var(--gold); }
+  .kw-tag.copied { border-color: var(--green); color: var(--green); }
+  .kw-tag::before { content: '⌕'; font-size: 13px; }
+
+  /* ── SCORING ── */
+  .score-grid { display: flex; flex-direction: column; gap: 8px; }
+  .score-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 11px 14px;
+    border: 1px solid var(--border);
+    border-radius: 7px;
+    background: var(--surface2);
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .score-row:hover { border-color: var(--border2); }
+  .score-row.scored {
+    border-color: var(--gold);
+    background: rgba(245, 200, 66, 0.05);
+  }
+  .score-dot {
+    width: 16px;
+    height: 16px;
+    border: 2px solid var(--border2);
+    border-radius: 50%;
+    flex-shrink: 0;
+    transition: all 0.15s;
+  }
+  .score-row.scored .score-dot {
+    background: var(--gold);
+    border-color: var(--gold);
+    box-shadow: 0 0 8px rgba(245, 200, 66, 0.4);
+  }
+  .score-text { font-size: 13px; flex: 1; }
+  .score-pts {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+  }
+  .score-row.scored .score-pts { color: var(--gold); }
+
+  .score-display {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 20px;
+    margin-top: 16px;
+    display: flex;
+    align-items: center;
+    gap: 24px;
+  }
+  .score-number {
+    font-family: 'Space Mono', monospace;
+    font-size: 52px;
+    font-weight: 700;
+    line-height: 1;
+    min-width: 70px;
+    transition: color 0.3s;
+  }
+  .score-verdict { flex: 1; }
+  .score-verdict-label {
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+  .score-verdict-text {
+    font-size: 13px;
+    color: var(--muted);
+  }
+  .score-bar-wrap {
+    height: 6px;
+    background: var(--border);
+    border-radius: 99px;
+    overflow: hidden;
+    margin-top: 10px;
+  }
+  .score-bar {
+    height: 100%;
+    border-radius: 99px;
+    transition: width 0.5s ease, background 0.3s;
+  }
+
+  /* ── RED FLAGS ── */
+  .flag-list { display: flex; flex-direction: column; gap: 8px; }
+  .flag-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 12px 14px;
+    border: 1px solid var(--border);
+    border-radius: 7px;
+    background: var(--surface2);
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .flag-item:hover { border-color: #5a2020; }
+  .flag-item.triggered {
+    border-color: var(--red);
+    background: rgba(255, 77, 77, 0.07);
+  }
+  .flag-icon {
+    font-size: 16px;
+    flex-shrink: 0;
+    margin-top: 1px;
+    opacity: 0.4;
+    transition: opacity 0.15s;
+  }
+  .flag-item.triggered .flag-icon { opacity: 1; }
+  .flag-title {
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 3px;
+    transition: color 0.15s;
+  }
+  .flag-item.triggered .flag-title { color: var(--red); }
+  .flag-desc { font-size: 12px; color: var(--muted); line-height: 1.5; }
+
+  .flag-counter {
+    margin-top: 14px;
+    padding: 14px 18px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    border: 1px solid var(--border);
+    background: var(--surface2);
+    transition: all 0.3s;
+  }
+  .flag-counter.danger {
+    border-color: var(--red);
+    background: rgba(255, 77, 77, 0.08);
+  }
+  .flag-counter-num {
+    font-family: 'Space Mono', monospace;
+    font-size: 32px;
+    font-weight: 700;
+    min-width: 44px;
+    line-height: 1;
+  }
+  .flag-counter-text { font-size: 13px; color: var(--muted); }
+
+  /* ── WATCHLIST ── */
+  .watchlist-form {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 20px;
+  }
+  .form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 14px;
+  }
+  .form-field { display: flex; flex-direction: column; gap: 5px; }
+  .form-label {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+  .form-input, .form-select {
+    background: var(--surface);
+    border: 1px solid var(--border2);
+    border-radius: 6px;
+    color: var(--text);
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 13px;
+    padding: 8px 12px;
+    outline: none;
+    transition: border-color 0.15s;
+  }
+  .form-input:focus, .form-select:focus { border-color: var(--gold-dim); }
+  .form-select option { background: var(--surface2); }
+  .add-btn {
+    background: var(--gold);
+    border: none;
+    border-radius: 7px;
+    color: #000;
+    cursor: pointer;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    padding: 10px 20px;
+    letter-spacing: 0.04em;
+    transition: background 0.15s;
+  }
+  .add-btn:hover { background: var(--gold-dim); }
+
+  .wl-table-wrap { overflow-x: auto; }
+  .wl-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+  }
+  .wl-table th {
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.12em;
+    color: var(--muted);
+    text-transform: uppercase;
+    padding: 8px 12px;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+  }
+  .wl-table td {
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: middle;
+  }
+  .wl-table tr:last-child td { border-bottom: none; }
+  .ticker-badge {
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    font-weight: 700;
+  }
+  .status-pill {
+    font-size: 10px;
+    font-weight: 600;
+    padding: 3px 9px;
+    border-radius: 20px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+  .pill-green { background: rgba(61,220,132,0.15); color: var(--green); }
+  .pill-yellow { background: rgba(255,149,0,0.15); color: var(--amber); }
+  .pill-red { background: rgba(255,77,77,0.15); color: var(--red); }
+  .del-btn {
+    background: none;
+    border: 1px solid var(--border2);
+    border-radius: 5px;
+    color: var(--muted);
+    cursor: pointer;
+    font-size: 11px;
+    padding: 4px 8px;
+    transition: all 0.15s;
+  }
+  .del-btn:hover { border-color: var(--red); color: var(--red); }
+
+  .wl-empty {
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--muted);
+    font-size: 13px;
+    border: 1px dashed var(--border2);
+    border-radius: 10px;
+  }
+
+  /* ── KOL DETECTION ── */
+  .kol-checks { display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px; }
+  .kol-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 11px 14px;
+    border: 1px solid var(--border);
+    border-radius: 7px;
+    background: var(--surface2);
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .kol-item:hover { border-color: var(--border2); }
+  .kol-item.yes {
+    border-color: var(--red);
+    background: rgba(255,77,77,0.06);
+  }
+  .kol-toggle {
+    width: 36px;
+    height: 20px;
+    border: 1px solid var(--border2);
+    border-radius: 20px;
+    background: var(--surface);
+    flex-shrink: 0;
+    margin-top: 2px;
+    position: relative;
+    transition: all 0.2s;
+  }
+  .kol-item.yes .kol-toggle {
+    background: var(--red);
+    border-color: var(--red);
+  }
+  .kol-toggle::after {
+    content: '';
+    position: absolute;
+    left: 2px;
+    top: 2px;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: var(--muted);
+    transition: all 0.2s;
+  }
+  .kol-item.yes .kol-toggle::after {
+    left: 18px;
+    background: #fff;
+  }
+  .kol-text { flex: 1; }
+  .kol-q { font-size: 13px; font-weight: 500; }
+  .kol-hint { font-size: 11px; color: var(--muted); margin-top: 2px; }
+
+  .kol-verdict {
+    padding: 16px 20px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    background: var(--surface2);
+  }
+  .kol-verdict-title {
+    font-size: 15px;
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+  .kol-verdict-sub { font-size: 12px; color: var(--muted); }
+
+  /* ── ENTRY/EXIT ── */
+  .decision-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin-bottom: 20px;
+  }
+  .decision-card {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 18px;
+  }
+  .decision-card-title {
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .decision-card-title .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+  }
+  .dot-green { background: var(--green); }
+  .dot-red { background: var(--red); }
+  .decision-list { display: flex; flex-direction: column; gap: 6px; }
+  .d-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    font-size: 12px;
+    color: var(--muted);
+    cursor: pointer;
+    padding: 7px 10px;
+    border-radius: 5px;
+    border: 1px solid transparent;
+    transition: all 0.15s;
+  }
+  .d-item:hover { border-color: var(--border); color: var(--text); }
+  .d-item.entry-ok { color: var(--green); border-color: rgba(61,220,132,0.25); background: rgba(61,220,132,0.05); }
+  .d-item.exit-trigger { color: var(--red); border-color: rgba(255,77,77,0.25); background: rgba(255,77,77,0.05); }
+  .d-bullet { width: 5px; height: 5px; border-radius: 50%; background: currentColor; flex-shrink: 0; margin-top: 6px; }
+
+  .final-call {
+    padding: 20px;
+    border-radius: 10px;
+    border: 2px solid var(--border);
+    text-align: center;
+    background: var(--surface2);
+    transition: all 0.3s;
+  }
+  .final-call.green-call { border-color: var(--green); background: rgba(61,220,132,0.05); }
+  .final-call.red-call { border-color: var(--red); background: rgba(255,77,77,0.05); }
+  .final-call.amber-call { border-color: var(--amber); background: rgba(255,149,0,0.05); }
+  .final-call-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    color: var(--muted);
+    margin-bottom: 6px;
+  }
+  .final-call-text {
+    font-size: 24px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+  .final-call-sub {
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 5px;
+  }
+
+  /* ── RESET BUTTON ── */
+  .reset-row {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 16px;
+  }
+  .reset-btn {
+    background: none;
+    border: 1px solid var(--border2);
+    border-radius: 6px;
+    color: var(--muted);
+    cursor: pointer;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 11px;
+    padding: 6px 14px;
+    transition: all 0.15s;
+  }
+  .reset-btn:hover { border-color: var(--red); color: var(--red); }
+
+  /* ── PROGRESS ── */
+  .progress-strip {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 20px;
+  }
+  .prog-seg {
+    height: 3px;
+    flex: 1;
+    border-radius: 99px;
+    background: var(--border);
+    transition: background 0.3s;
+  }
+  .prog-seg.done { background: var(--green); }
+  .prog-seg.active { background: var(--gold); }
+
+  /* ── UTILITY ── */
+  .divider { border: none; border-top: 1px solid var(--border); margin: 20px 0; }
+  .tip-box {
+    padding: 12px 16px;
+    border-left: 3px solid var(--gold);
+    background: rgba(245,200,66,0.05);
+    border-radius: 0 7px 7px 0;
+    font-size: 12px;
+    color: var(--muted);
+    margin: 14px 0;
+  }
+  .tip-box strong { color: var(--gold); }
+
+  @media (max-width: 600px) {
+    .form-grid { grid-template-columns: 1fr; }
+    .decision-grid { grid-template-columns: 1fr; }
+    .score-display { flex-direction: column; gap: 12px; }
+    .score-number { font-size: 40px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="app-header">
+  <div class="logo">
+    <span class="logo-main">⬡ Meme Coin Attention Map</span>
+    <span class="logo-sub">by Mustachain · Operator Tool</span>
+  </div>
+  <span class="header-badge">Community Edition</span>
+</header>
+
+<nav class="tab-nav">
+  <button class="tab-btn active" onclick="switchTab('scan')">01 · Daily Scan</button>
+  <button class="tab-btn" onclick="switchTab('score')">02 · Score Coin</button>
+  <button class="tab-btn" onclick="switchTab('flags')">03 · Red Flags</button>
+  <button class="tab-btn" onclick="switchTab('watchlist')">04 · Watchlist</button>
+  <button class="tab-btn" onclick="switchTab('kol')">05 · KOL Check</button>
+  <button class="tab-btn" onclick="switchTab('decision')">06 · Entry/Exit</button>
+</nav>
+
+<main class="app-body">
+
+  <!-- ════════════ TAB 1: DAILY SCAN ════════════ -->
+  <div class="tab-panel active" id="tab-scan">
+    <div class="section-label">Step 01</div>
+    <div class="section-title">Daily X Scanning Routine</div>
+    <div class="section-desc">Run this every morning or evening. Tick each step as you go. 10–15 minutes total.</div>
+
+    <div class="reset-row">
+      <button class="reset-btn" onclick="resetTab('scan')">↺ Reset Scan</button>
+    </div>
+
+    <!-- STEP 1 -->
+    <div class="card">
+      <div class="card-header">
+        <div class="step-num">1</div>
+        <div class="card-title">Search for Attention Leaks on X</div>
+        <div class="card-time">3 mins</div>
+      </div>
+      <p style="font-size:12px;color:var(--muted);margin-bottom:12px;">Click each keyword to copy it. Paste it into X search. Look for the same coin ticker appearing across <strong>multiple unrelated accounts</strong> in a short window.</p>
+      <div class="kw-grid">
+        <span class="kw-tag" onclick="copyKw(this,'new meme')">new meme</span>
+        <span class="kw-tag" onclick="copyKw(this,'CTO')">CTO</span>
+        <span class="kw-tag" onclick="copyKw(this,'gem')">gem</span>
+        <span class="kw-tag" onclick="copyKw(this,'100x')">100x</span>
+        <span class="kw-tag" onclick="copyKw(this,'alpha')">alpha</span>
+        <span class="kw-tag" onclick="copyKw(this,'just launched')">just launched</span>
+        <span class="kw-tag" onclick="copyKw(this,'$SOL gem')">$SOL gem</span>
+        <span class="kw-tag" onclick="copyKw(this,'$ETH meme')">$ETH meme</span>
+      </div>
+      <div class="check-list">
+        <div class="check-item" onclick="toggleCheck(this)">
+          <div class="check-box"></div>
+          <div class="check-text"><strong>Same coin ticker appears across 3+ unrelated accounts</strong> <span>— not people who follow each other</span></div>
+        </div>
+        <div class="check-item" onclick="toggleCheck(this)">
+          <div class="check-box"></div>
+          <div class="check-text"><strong>Appeared in a short time window</strong> <span>— multiple hits within the last few hours</span></div>
+        </div>
+        <div class="check-item" onclick="toggleCheck(this)">
+          <div class="check-box"></div>
+          <div class="check-text"><strong>Added promising coin to watchlist candidate list</strong></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 2 -->
+    <div class="card">
+      <div class="card-header">
+        <div class="step-num">2</div>
+        <div class="card-title">Scan Your Influencer List</div>
+        <div class="card-time">3 mins</div>
+      </div>
+      <div class="tip-box"><strong>Who to follow:</strong> Build a fixed list of 10–15 accounts that post BEFORE coins trend — not after. See Tab 05 for how to identify them.</div>
+      <div class="check-list">
+        <div class="check-item" onclick="toggleCheck(this)">
+          <div class="check-box"></div>
+          <div class="check-text"><strong>Same coin mentioned by 2–3 independent accounts</strong> <span>within a few hours of each other</span></div>
+        </div>
+        <div class="check-item" onclick="toggleCheck(this)">
+          <div class="check-box"></div>
+          <div class="check-text"><strong>Spotted "just aped this" posts with chart screenshots</strong></div>
+        </div>
+        <div class="check-item" onclick="toggleCheck(this)">
+          <div class="check-box"></div>
+          <div class="check-text"><strong>Any account discussing a coin before it is trending</strong> <span>— quiet early mentions are gold</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 3 -->
+    <div class="card">
+      <div class="card-header">
+        <div class="step-num">3</div>
+        <div class="card-title">Check Engagement Velocity</div>
+        <div class="card-time">2–3 mins</div>
+      </div>
+      <div class="check-list">
+        <div class="check-item" onclick="toggleCheck(this)">
+          <div class="check-box"></div>
+          <div class="check-text"><strong>Replies per hour are growing</strong> <span>— not flat or suddenly spiked from zero</span></div>
+        </div>
+        <div class="check-item" onclick="toggleCheck(this)">
+          <div class="check-box"></div>
+          <div class="check-text"><strong>Reposts growing organically</strong> <span>— not a sudden unnatural spike</span></div>
+        </div>
+        <div class="check-item" onclick="toggleCheck(this)">
+          <div class="check-box"></div>
+          <div class="check-text"><strong>Comment quality is real</strong> <span>— actual questions and debate, not copy-paste rockets 🚀🚀🚀</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 4 -->
+    <div class="card">
+      <div class="card-header">
+        <div class="step-num">4</div>
+        <div class="card-title">Validate on DexScreener</div>
+        <div class="card-time">3 mins</div>
+      </div>
+      <div style="margin-bottom:12px;">
+        <a href="https://dexscreener.com" target="_blank" style="font-family:'Space Mono',monospace;font-size:12px;color:var(--gold);text-decoration:none;border:1px solid var(--gold-dim);padding:6px 14px;border-radius:5px;">→ Open DexScreener</a>
+      </div>
+      <div class="check-list">
+        <div class="check-item" onclick="toggleCheck(this)">
+          <div class="check-box"></div>
+          <div class="check-text"><strong>Volume is increasing</strong> <span>— not flat or declining</span></div>
+        </div>
+        <div class="check-item" onclick="toggleCheck(this)">
+          <div class="check-box"></div>
+          <div class="check-text"><strong>Liquidity is growing and stable</strong> <span>— not thin and erratic</span></div>
+        </div>
+        <div class="check-item" onclick="toggleCheck(this)">
+          <div class="check-box"></div>
+          <div class="check-text"><strong>Holder count is increasing</strong> <span>— more wallets joining = organic demand</span></div>
+        </div>
+        <div class="check-item" onclick="toggleCheck(this)">
+          <div class="check-box"></div>
+          <div class="check-text"><strong>Price is still EARLY</strong> <span>— not already 5x or vertical. If it is already 5x you are NOT early.</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 5 -->
+    <div class="card">
+      <div class="card-header">
+        <div class="step-num">5</div>
+        <div class="card-title">Identify the Narrative</div>
+        <div class="card-time">2–3 mins</div>
+      </div>
+      <p style="font-size:12px;color:var(--muted);margin-bottom:12px;">Every meme coin that sustains a pump rides a story. If you can't describe it in one sentence — skip it.</p>
+      <div class="check-list">
+        <div class="check-item" onclick="toggleCheck(this)">
+          <div class="check-box"></div>
+          <div class="check-text"><strong>AI meme coin meta</strong></div>
+        </div>
+        <div class="check-item" onclick="toggleCheck(this)">
+          <div class="check-box"></div>
+          <div class="check-text"><strong>Dog / frog / animal meta</strong></div>
+        </div>
+        <div class="check-item" onclick="toggleCheck(this)">
+          <div class="check-box"></div>
+          <div class="check-text"><strong>CTO (Community Takeover) story</strong></div>
+        </div>
+        <div class="check-item" onclick="toggleCheck(this)">
+          <div class="check-box"></div>
+          <div class="check-text"><strong>Solana meme season rotation</strong></div>
+        </div>
+        <div class="check-item" onclick="toggleCheck(this)">
+          <div class="check-box"></div>
+          <div class="check-text"><strong>"Underdog early gem" positioning</strong></div>
+        </div>
+      </div>
+      <div class="tip-box" style="margin-top:14px;"><strong>Rule:</strong> If the narrative is not clear in ONE sentence, skip the coin. No legible story = no sustained momentum.</div>
+    </div>
+  </div><!-- /tab-scan -->
+
+
+  <!-- ════════════ TAB 2: SCORE COIN ════════════ -->
+  <div class="tab-panel" id="tab-score">
+    <div class="section-label">Step 02</div>
+    <div class="section-title">Quick Scoring System</div>
+    <div class="section-desc">Score every coin objectively. Don't trust gut feelings. Tap each condition that applies.</div>
+
+    <div class="reset-row">
+      <button class="reset-btn" onclick="resetScore()">↺ Reset Score</button>
+    </div>
+
+    <div class="score-grid" id="scoreGrid">
+      <div class="score-row" onclick="toggleScore(this)">
+        <div class="score-dot"></div>
+        <div class="score-text">Mentioned by multiple <strong>unrelated</strong> accounts recently</div>
+        <div class="score-pts">+1</div>
+      </div>
+      <div class="score-row" onclick="toggleScore(this)">
+        <div class="score-dot"></div>
+        <div class="score-text">Influencers are <strong>starting</strong> to talk about it — not already everywhere</div>
+        <div class="score-pts">+1</div>
+      </div>
+      <div class="score-row" onclick="toggleScore(this)">
+        <div class="score-dot"></div>
+        <div class="score-text">Engagement is <strong>suddenly rising</strong> with genuine replies</div>
+        <div class="score-pts">+1</div>
+      </div>
+      <div class="score-row" onclick="toggleScore(this)">
+        <div class="score-dot"></div>
+        <div class="score-text">DexScreener shows <strong>increasing volume</strong> on-chain</div>
+        <div class="score-pts">+1</div>
+      </div>
+      <div class="score-row" onclick="toggleScore(this)">
+        <div class="score-dot"></div>
+        <div class="score-text">A <strong>clear, describable narrative</strong> exists — one sentence</div>
+        <div class="score-pts">+1</div>
+      </div>
+      <div class="score-row" onclick="toggleScore(this)">
+        <div class="score-dot"></div>
+        <div class="score-text">Price is <strong>still early</strong> — not yet vertical or 3–5x already</div>
+        <div class="score-pts">+1</div>
+      </div>
+    </div>
+
+    <div class="score-display" id="scoreDisplay">
+      <div class="score-number" id="scoreNum">0</div>
+      <div class="score-verdict">
+        <div class="score-verdict-label" id="verdictLabel">No signal yet</div>
+        <div class="score-verdict-text" id="verdictText">Tap the conditions above that apply to this coin.</div>
+        <div class="score-bar-wrap"><div class="score-bar" id="scoreBar" style="width:0%;background:var(--muted)"></div></div>
+      </div>
+    </div>
+  </div><!-- /tab-score -->
+
+
+  <!-- ════════════ TAB 3: RED FLAGS ════════════ -->
+  <div class="tab-panel" id="tab-flags">
+    <div class="section-label">Step 03</div>
+    <div class="section-title">Red Flags Checker</div>
+    <div class="section-desc">Tick every red flag you see. Each one is a reason to skip or be very careful. Speed matters — eliminate bad coins in seconds.</div>
+
+    <div class="reset-row">
+      <button class="reset-btn" onclick="resetFlags()">↺ Reset Flags</button>
+    </div>
+
+    <div class="flag-list">
+      <div class="flag-item" onclick="toggleFlag(this)">
+        <div class="flag-icon">🚨</div>
+        <div>
+          <div class="flag-title">X is already full of "100x / Next PEPE" spam</div>
+          <div class="flag-desc">Every second tweet uses "100x incoming" or "next PEPE" — you missed the early phase. You are looking at the distribution phase. Early holders are selling into your FOMO.</div>
+        </div>
+      </div>
+      <div class="flag-item" onclick="toggleFlag(this)">
+        <div class="flag-icon">📈</div>
+        <div>
+          <div class="flag-title">Price already 3–10x in a short time</div>
+          <div class="flag-desc">Not early anymore. Even if it continues up, your risk/reward is now poor. The easiest gains were already made by others before you arrived.</div>
+        </div>
+      </div>
+      <div class="flag-item" onclick="toggleFlag(this)">
+        <div class="flag-icon">🤖</div>
+        <div>
+          <div class="flag-title">Engagement looks bot-like</div>
+          <div class="flag-desc">Repeated copy-paste comments, strings of rocket emojis with no text, generic messages with no real discussion. Real communities ask questions and debate.</div>
+        </div>
+      </div>
+      <div class="flag-item" onclick="toggleFlag(this)">
+        <div class="flag-icon">⏱️</div>
+        <div>
+          <div class="flag-title">All influencers posted at the same time</div>
+          <div class="flag-desc">Real discovery is staggered. If 5–10 influencers all posted the same coin within a 60-minute window with similar language — that is paid coordination. You are being set up as exit liquidity.</div>
+        </div>
+      </div>
+      <div class="flag-item" onclick="toggleFlag(this)">
+        <div class="flag-icon">📊</div>
+        <div>
+          <div class="flag-title">No on-chain confirmation on DexScreener</div>
+          <div class="flag-desc">X buzz is high but DexScreener shows flat or declining volume. Hype is not translating to real market activity. Classic pre-dump setup: hype manufactured before early holders sell.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="flag-counter" id="flagCounter">
+      <div class="flag-counter-num" id="flagNum" style="color:var(--muted)">0</div>
+      <div>
+        <div style="font-size:14px;font-weight:600;" id="flagVerdict">No red flags triggered</div>
+        <div class="flag-counter-text" id="flagSub">Tap any flag you see to activate it.</div>
+      </div>
+    </div>
+  </div><!-- /tab-flags -->
+
+
+  <!-- ════════════ TAB 4: WATCHLIST ════════════ -->
+  <div class="tab-panel" id="tab-watchlist">
+    <div class="section-label">Step 04</div>
+    <div class="section-title">Watchlist</div>
+    <div class="section-desc">Add any coin scoring 3 or above. Review every 24–48 hours. A rising score over days is stronger than a sudden spike.</div>
+
+    <div class="watchlist-form">
+      <div class="form-grid">
+        <div class="form-field">
+          <label class="form-label">Ticker</label>
+          <input class="form-input" id="wl-ticker" placeholder="e.g. $PEPE" maxlength="12">
+        </div>
+        <div class="form-field">
+          <label class="form-label">Narrative</label>
+          <input class="form-input" id="wl-narrative" placeholder="e.g. AI dog coin on SOL">
+        </div>
+        <div class="form-field">
+          <label class="form-label">Volume Trend</label>
+          <select class="form-select" id="wl-volume">
+            <option value="Flat">Flat</option>
+            <option value="Rising">Rising</option>
+            <option value="Exploding">Exploding</option>
+          </select>
+        </div>
+        <div class="form-field">
+          <label class="form-label">Price Stage</label>
+          <select class="form-select" id="wl-stage">
+            <option value="Early">Early</option>
+            <option value="Pumping">Pumping</option>
+            <option value="Late">Late</option>
+          </select>
+        </div>
+        <div class="form-field">
+          <label class="form-label">Influencers</label>
+          <select class="form-select" id="wl-infl">
+            <option value="None">None</option>
+            <option value="1–2">1–2</option>
+            <option value="Cluster">Cluster</option>
+          </select>
+        </div>
+        <div class="form-field">
+          <label class="form-label">Score (0–6)</label>
+          <select class="form-select" id="wl-score">
+            <option value="0">0</option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+            <option value="6">6</option>
+          </select>
+        </div>
+      </div>
+      <div style="display:flex;gap:10px;align-items:center;">
+        <input class="form-input" id="wl-link" placeholder="DexScreener link (optional)" style="flex:1">
+        <button class="add-btn" onclick="addToWatchlist()">+ Add Coin</button>
+      </div>
+    </div>
+
+    <div id="wlTableWrap"></div>
+  </div><!-- /tab-watchlist -->
+
+
+  <!-- ════════════ TAB 5: KOL CHECK ════════════ -->
+  <div class="tab-panel" id="tab-kol">
+    <div class="section-label">Step 05</div>
+    <div class="section-title">KOL / Pump Coordination Check</div>
+    <div class="section-desc">Tap YES for each pattern you see. 3+ YES answers = treat this as a paid campaign. Adjust your strategy accordingly.</div>
+
+    <div class="reset-row">
+      <button class="reset-btn" onclick="resetKol()">↺ Reset Check</button>
+    </div>
+
+    <div class="kol-checks">
+      <div class="kol-item" onclick="toggleKol(this)">
+        <div class="kol-toggle"></div>
+        <div class="kol-text">
+          <div class="kol-q">Multiple influencers posted this coin within a few hours?</div>
+          <div class="kol-hint">Real discovery is staggered over days. Paid campaigns compress into 1–6 hours.</div>
+        </div>
+      </div>
+      <div class="kol-item" onclick="toggleKol(this)">
+        <div class="kol-toggle"></div>
+        <div class="kol-text">
+          <div class="kol-q">Messaging is nearly identical across different accounts?</div>
+          <div class="kol-hint">Same urgency, same upside target, same FOMO angle. Uniform optimism = paid campaign fingerprint.</div>
+        </div>
+      </div>
+      <div class="kol-item" onclick="toggleKol(this)">
+        <div class="kol-toggle"></div>
+        <div class="kol-text">
+          <div class="kol-q">No prior mention of this coin on the influencer's profile?</div>
+          <div class="kol-hint">Zero history then sudden obsession (3–5 posts in 48 hours) = campaign behavior, not personal conviction.</div>
+        </div>
+      </div>
+      <div class="kol-item" onclick="toggleKol(this)">
+        <div class="kol-toggle"></div>
+        <div class="kol-text">
+          <div class="kol-q">Engagement is shallow — emoji-heavy, no real conversation?</div>
+          <div class="kol-hint">50k follower account with only generic emoji comments = likely bot-amplified.</div>
+        </div>
+      </div>
+      <div class="kol-item" onclick="toggleKol(this)">
+        <div class="kol-toggle"></div>
+        <div class="kol-text">
+          <div class="kol-q">X is loud but DexScreener volume doesn't match yet?</div>
+          <div class="kol-hint">Price lag vs hype timing. Hype manufactured to pull in buyers while early holders prepare to exit.</div>
+        </div>
+      </div>
+      <div class="kol-item" onclick="toggleKol(this)">
+        <div class="kol-toggle"></div>
+        <div class="kol-text">
+          <div class="kol-q">Urgency language overload? ("don't miss", "last chance", "early alpha")</div>
+          <div class="kol-hint">Designed to trigger fast emotional decisions. Real early discovery is usually calm and analytical.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="kol-verdict" id="kolVerdict">
+      <div class="kol-verdict-title" id="kolVerdictTitle" style="color:var(--muted)">Tap patterns above to evaluate</div>
+      <div class="kol-verdict-sub" id="kolVerdictSub">Your campaign classification will appear here.</div>
+    </div>
+
+    <hr class="divider">
+
+    <div class="card" style="margin-top:0">
+      <div class="card-header" style="margin-bottom:12px">
+        <div class="card-title" style="font-size:13px">Campaign Phase Guide</div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <div style="display:flex;gap:12px;padding:10px 12px;border-radius:7px;background:rgba(61,220,132,0.05);border:1px solid rgba(61,220,132,0.2)">
+          <span style="font-family:'Space Mono',monospace;font-size:11px;color:var(--green);min-width:60px;font-weight:700">EARLY</span>
+          <span style="font-size:12px;color:var(--muted)">Few influencers, price flat. Can still run — tight entry, fast exit plan.</span>
+        </div>
+        <div style="display:flex;gap:12px;padding:10px 12px;border-radius:7px;background:rgba(255,149,0,0.05);border:1px solid rgba(255,149,0,0.2)">
+          <span style="font-family:'Space Mono',monospace;font-size:11px;color:var(--amber);min-width:60px;font-weight:700">MID</span>
+          <span style="font-size:12px;color:var(--muted)">Campaign active, price starting to move. Risky entry — requires strict exit trigger.</span>
+        </div>
+        <div style="display:flex;gap:12px;padding:10px 12px;border-radius:7px;background:rgba(255,77,77,0.05);border:1px solid rgba(255,77,77,0.2)">
+          <span style="font-family:'Space Mono',monospace;font-size:11px;color:var(--red);min-width:60px;font-weight:700">LATE</span>
+          <span style="font-size:12px;color:var(--muted)">X is loud, everyone is posting, price already up significantly. Exit liquidity zone — avoid or stay out.</span>
+        </div>
+      </div>
+    </div>
+  </div><!-- /tab-kol -->
+
+
+  <!-- ════════════ TAB 6: ENTRY/EXIT ════════════ -->
+  <div class="tab-panel" id="tab-decision">
+    <div class="section-label">Step 06</div>
+    <div class="section-title">Entry & Exit Decision</div>
+    <div class="section-desc">Check all conditions that are TRUE right now. The system will tell you what to do.</div>
+
+    <div class="reset-row">
+      <button class="reset-btn" onclick="resetDecision()">↺ Reset</button>
+    </div>
+
+    <div class="decision-grid">
+      <!-- ENTRY -->
+      <div class="decision-card">
+        <div class="decision-card-title">
+          <div class="dot dot-green"></div>
+          Entry Conditions
+        </div>
+        <div class="decision-list" id="entryList">
+          <div class="d-item" onclick="toggleEntry(this)">
+            <div class="d-bullet"></div>
+            <span>Coin still early on X — not trending everywhere</span>
+          </div>
+          <div class="d-item" onclick="toggleEntry(this)">
+            <div class="d-bullet"></div>
+            <span>Narrative forming, not yet saturated</span>
+          </div>
+          <div class="d-item" onclick="toggleEntry(this)">
+            <div class="d-bullet"></div>
+            <span>Price consolidating or slowly rising — no vertical candles</span>
+          </div>
+          <div class="d-item" onclick="toggleEntry(this)">
+            <div class="d-bullet"></div>
+            <span>Volume increasing but not yet parabolic</span>
+          </div>
+          <div class="d-item" onclick="toggleEntry(this)">
+            <div class="d-bullet"></div>
+            <span>Score of 3+ from scoring system</span>
+          </div>
+          <div class="d-item" onclick="toggleEntry(this)">
+            <div class="d-bullet"></div>
+            <span>DexScreener volume confirms X attention</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- EXIT -->
+      <div class="decision-card">
+        <div class="decision-card-title">
+          <div class="dot dot-red"></div>
+          Exit Triggers
+        </div>
+        <div class="decision-list" id="exitList">
+          <div class="d-item" onclick="toggleExit(this)">
+            <div class="d-bullet"></div>
+            <span>X is too loud — everyone posting, "100x" everywhere</span>
+          </div>
+          <div class="d-item" onclick="toggleExit(this)">
+            <div class="d-bullet"></div>
+            <span>Parabolic chart — vertical candles, no pullbacks</span>
+          </div>
+          <div class="d-item" onclick="toggleExit(this)">
+            <div class="d-bullet"></div>
+            <span>Volume spike but price has stopped accelerating</span>
+          </div>
+          <div class="d-item" onclick="toggleExit(this)">
+            <div class="d-bullet"></div>
+            <span>"Still early / last dip" posts AFTER a big move</span>
+          </div>
+          <div class="d-item" onclick="toggleExit(this)">
+            <div class="d-bullet"></div>
+            <span>"Is it too late?" questions flooding comment sections</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="final-call" id="finalCall">
+      <div class="final-call-label">SYSTEM CALL</div>
+      <div class="final-call-text" id="callText" style="color:var(--muted)">Tick conditions above</div>
+      <div class="final-call-sub" id="callSub">Select entry or exit signals to get your action call.</div>
+    </div>
+
+    <hr class="divider">
+
+    <div class="tip-box">
+      <strong>The Golden Rule:</strong> "When X becomes excited AND price becomes vertical — you are late. The correct response is not to buy. It is to sell."
+    </div>
+
+    <div class="tip-box" style="border-color:var(--blue);background:rgba(77,166,255,0.05);margin-top:10px;">
+      <strong>Hold Rule:</strong> Ignore new hype posts while holding. Focus on price structure only. Do NOT add to a position just because more influencers are posting. Set your stop-loss BEFORE you enter and honour it.
+    </div>
+  </div><!-- /tab-decision -->
+
+</main>
+
+<script>
+  // ── TAB SWITCHING ──
+  function switchTab(id) {
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('tab-' + id).classList.add('active');
+    event.currentTarget.classList.add('active');
+  }
+
+  // ── GENERIC CHECKLIST TOGGLE ──
+  function toggleCheck(el) {
+    el.classList.toggle('checked');
+  }
+
+  // ── KEYWORD COPY ──
+  function copyKw(el, kw) {
+    navigator.clipboard.writeText(kw).then(() => {
+      el.classList.add('copied');
+      el.textContent = '✓ ' + kw;
+      setTimeout(() => {
+        el.classList.remove('copied');
+        el.innerHTML = kw;
+        el.setAttribute('onclick', `copyKw(this,'${kw}')`);
+      }, 1800);
+    });
+  }
+
+  // ── RESET SCAN ──
+  function resetTab(tabId) {
+    document.querySelectorAll('#tab-' + tabId + ' .check-item').forEach(i => i.classList.remove('checked', 'flagged'));
+  }
+
+  // ── SCORING ──
+  let score = 0;
+  function toggleScore(el) {
+    el.classList.toggle('scored');
+    updateScore();
+  }
+  function updateScore() {
+    score = document.querySelectorAll('#scoreGrid .score-row.scored').length;
+    const num = document.getElementById('scoreNum');
+    const label = document.getElementById('verdictLabel');
+    const text = document.getElementById('verdictText');
+    const bar = document.getElementById('scoreBar');
+    num.textContent = score;
+    const pct = (score / 6 * 100) + '%';
+    bar.style.width = pct;
+    if (score <= 2) {
+      num.style.color = 'var(--muted)';
+      bar.style.background = 'var(--muted)';
+      label.textContent = 'No signal';
+      label.style.color = 'var(--muted)';
+      text.textContent = 'Score 0–2: Ignore this coin. Move your attention elsewhere.';
+    } else if (score <= 4) {
+      num.style.color = 'var(--amber)';
+      bar.style.background = 'var(--amber)';
+      label.textContent = 'Watchlist Only';
+      label.style.color = 'var(--amber)';
+      text.textContent = 'Score 3–4: Add to watchlist. Monitor daily. Do not enter yet — wait for more signals.';
+    } else {
+      num.style.color = 'var(--green)';
+      bar.style.background = 'var(--green)';
+      label.textContent = 'Strong Candidate';
+      label.style.color = 'var(--green)';
+      text.textContent = 'Score 5–6: Early entry zone. Validate on-chain FIRST. This does not mean buy immediately.';
+    }
+  }
+  function resetScore() {
+    document.querySelectorAll('#scoreGrid .score-row').forEach(r => r.classList.remove('scored'));
+    updateScore();
+  }
+
+  // ── RED FLAGS ──
+  function toggleFlag(el) {
+    el.classList.toggle('triggered');
+    updateFlags();
+  }
+  function updateFlags() {
+    const count = document.querySelectorAll('.flag-item.triggered').length;
+    const num = document.getElementById('flagNum');
+    const verdict = document.getElementById('flagVerdict');
+    const sub = document.getElementById('flagSub');
+    const counter = document.getElementById('flagCounter');
+    num.textContent = count;
+    if (count === 0) {
+      num.style.color = 'var(--muted)';
+      verdict.textContent = 'No red flags triggered';
+      verdict.style.color = 'var(--text)';
+      sub.textContent = 'Tap any flag you see to activate it.';
+      counter.classList.remove('danger');
+    } else if (count <= 2) {
+      num.style.color = 'var(--amber)';
+      verdict.textContent = count + ' flag' + (count > 1 ? 's' : '') + ' — proceed with caution';
+      verdict.style.color = 'var(--amber)';
+      sub.textContent = 'Exercise extra caution. Reduce position size if entering.';
+      counter.classList.remove('danger');
+    } else {
+      num.style.color = 'var(--red)';
+      verdict.textContent = count + ' flags — HIGH RISK';
+      verdict.style.color = 'var(--red)';
+      sub.textContent = '3+ red flags: treat this as a paid campaign. Skip or apply very fast exit rules.';
+      counter.classList.add('danger');
+    }
+  }
+  function resetFlags() {
+    document.querySelectorAll('.flag-item').forEach(f => f.classList.remove('triggered'));
+    updateFlags();
+  }
+
+  // ── WATCHLIST ──
+  let watchlist = JSON.parse(localStorage.getItem('mustachain_wl') || '[]');
+
+  function addToWatchlist() {
+    const ticker = document.getElementById('wl-ticker').value.trim().toUpperCase();
+    if (!ticker) { alert('Enter a ticker first.'); return; }
+    const entry = {
+      id: Date.now(),
+      ticker,
+      narrative: document.getElementById('wl-narrative').value.trim() || '—',
+      volume: document.getElementById('wl-volume').value,
+      stage: document.getElementById('wl-stage').value,
+      influencers: document.getElementById('wl-infl').value,
+      score: parseInt(document.getElementById('wl-score').value),
+      link: document.getElementById('wl-link').value.trim(),
+      date: new Date().toLocaleDateString('en-GB', { day:'numeric', month:'short' }),
+      action: parseInt(document.getElementById('wl-score').value) >= 5 ? 'Enter' : parseInt(document.getElementById('wl-score').value) >= 3 ? 'Watch' : 'Ignore'
+    };
+    watchlist.unshift(entry);
+    saveWatchlist();
+    renderWatchlist();
+    document.getElementById('wl-ticker').value = '';
+    document.getElementById('wl-narrative').value = '';
+    document.getElementById('wl-link').value = '';
+    document.getElementById('wl-score').value = '3';
+  }
+
+  function removeFromWatchlist(id) {
+    watchlist = watchlist.filter(e => e.id !== id);
+    saveWatchlist();
+    renderWatchlist();
+  }
+
+  function saveWatchlist() {
+    localStorage.setItem('mustachain_wl', JSON.stringify(watchlist));
+  }
+
+  function renderWatchlist() {
+    const wrap = document.getElementById('wlTableWrap');
+    if (watchlist.length === 0) {
+      wrap.innerHTML = '<div class="wl-empty">No coins added yet.<br>Score a coin ≥ 3 and add it here.</div>';
+      return;
+    }
+    let html = '<div class="wl-table-wrap"><table class="wl-table"><thead><tr><th>Coin</th><th>Narrative</th><th>Volume</th><th>Stage</th><th>Influencers</th><th>Score</th><th>Action</th><th>Added</th><th></th></tr></thead><tbody>';
+    watchlist.forEach(e => {
+      const pillClass = e.score >= 5 ? 'pill-green' : e.score >= 3 ? 'pill-yellow' : 'pill-red';
+      const actionClass = e.action === 'Enter' ? 'pill-green' : e.action === 'Watch' ? 'pill-yellow' : 'pill-red';
+      const tickerHtml = e.link ? `<a href="${e.link}" target="_blank" class="ticker-badge" style="color:var(--gold);text-decoration:none">${e.ticker}</a>` : `<span class="ticker-badge" style="color:var(--gold)">${e.ticker}</span>`;
+      html += `<tr>
+        <td>${tickerHtml}</td>
+        <td style="font-size:12px;color:var(--muted);max-width:140px">${e.narrative}</td>
+        <td><span class="status-pill ${e.volume === 'Exploding' ? 'pill-green' : e.volume === 'Rising' ? 'pill-yellow' : 'pill-red'}">${e.volume}</span></td>
+        <td><span class="status-pill ${e.stage === 'Early' ? 'pill-green' : e.stage === 'Pumping' ? 'pill-yellow' : 'pill-red'}">${e.stage}</span></td>
+        <td style="font-size:12px;color:var(--muted)">${e.influencers}</td>
+        <td><span class="status-pill ${pillClass}">${e.score}/6</span></td>
+        <td><span class="status-pill ${actionClass}">${e.action}</span></td>
+        <td style="font-size:11px;color:var(--muted2)">${e.date}</td>
+        <td><button class="del-btn" onclick="removeFromWatchlist(${e.id})">✕</button></td>
+      </tr>`;
+    });
+    html += '</tbody></table></div>';
+    wrap.innerHTML = html;
+  }
+
+  renderWatchlist();
+
+  // ── KOL CHECK ──
+  function toggleKol(el) {
+    el.classList.toggle('yes');
+    updateKol();
+  }
+  function updateKol() {
+    const count = document.querySelectorAll('.kol-item.yes').length;
+    const v = document.getElementById('kolVerdict');
+    const t = document.getElementById('kolVerdictTitle');
+    const s = document.getElementById('kolVerdictSub');
+    if (count === 0) {
+      t.style.color = 'var(--muted)';
+      t.textContent = 'Tap patterns above to evaluate';
+      s.textContent = 'Your campaign classification will appear here.';
+      v.style.borderColor = 'var(--border)';
+    } else if (count <= 2) {
+      t.style.color = 'var(--green)';
+      t.textContent = count + ' signal' + (count > 1 ? 's' : '') + ' — Possibly Organic';
+      s.textContent = 'Low coordination risk. Still apply standard due diligence and on-chain validation.';
+      v.style.borderColor = 'var(--green)';
+    } else if (count === 3) {
+      t.style.color = 'var(--amber)';
+      t.textContent = '3 signals — Treat as Paid Campaign';
+      s.textContent = 'Your window is much shorter. If you enter, set a fast, pre-defined exit. Do not hold for narrative.';
+      v.style.borderColor = 'var(--amber)';
+    } else {
+      t.style.color = 'var(--red)';
+      t.textContent = count + ' signals — HIGH COORDINATION RISK';
+      s.textContent = 'Near-certain paid campaign. Early phase only for very experienced traders with tight stops. Most should skip entirely.';
+      v.style.borderColor = 'var(--red)';
+    }
+  }
+  function resetKol() {
+    document.querySelectorAll('.kol-item').forEach(k => k.classList.remove('yes'));
+    updateKol();
+  }
+
+  // ── ENTRY / EXIT ──
+  function toggleEntry(el) {
+    el.classList.toggle('entry-ok');
+    updateDecision();
+  }
+  function toggleExit(el) {
+    el.classList.toggle('exit-trigger');
+    updateDecision();
+  }
+  function updateDecision() {
+    const entryCount = document.querySelectorAll('#entryList .entry-ok').length;
+    const exitCount = document.querySelectorAll('#exitList .exit-trigger').length;
+    const fc = document.getElementById('finalCall');
+    const ct = document.getElementById('callText');
+    const cs = document.getElementById('callSub');
+    fc.className = 'final-call';
+    if (exitCount >= 2) {
+      fc.classList.add('red-call');
+      ct.style.color = 'var(--red)';
+      ct.textContent = 'SELL / DO NOT ENTER';
+      cs.textContent = exitCount + ' exit trigger' + (exitCount > 1 ? 's' : '') + ' active. X is excited and price is extended. This is a selling opportunity, not a buying one.';
+    } else if (exitCount === 1 && entryCount < 4) {
+      fc.classList.add('amber-call');
+      ct.style.color = 'var(--amber)';
+      ct.textContent = 'CAUTION — HOLD ONLY';
+      cs.textContent = 'One exit signal detected. If already in position, be ready to exit. Do not add. Tighten your stop-loss.';
+    } else if (entryCount >= 4) {
+      fc.classList.add('green-call');
+      ct.style.color = 'var(--green)';
+      ct.textContent = 'ENTRY ZONE — VALIDATE FIRST';
+      cs.textContent = entryCount + '/6 entry conditions met. Run on-chain check on DexScreener before entering. Set your stop-loss BEFORE you buy.';
+    } else if (entryCount >= 2) {
+      fc.classList.add('amber-call');
+      ct.style.color = 'var(--amber)';
+      ct.textContent = 'WATCHLIST — WAIT';
+      cs.textContent = entryCount + ' entry conditions met. Not enough signals yet. Add to watchlist and monitor for 24–48 hours.';
+    } else {
+      ct.style.color = 'var(--muted)';
+      ct.textContent = 'Tick conditions above';
+      cs.textContent = 'Select entry or exit signals to get your action call.';
+    }
+  }
+  function resetDecision() {
+    document.querySelectorAll('#entryList .d-item').forEach(d => d.classList.remove('entry-ok'));
+    document.querySelectorAll('#exitList .d-item').forEach(d => d.classList.remove('exit-trigger'));
+    updateDecision();
+  }
+</script>
+</body>
+</html>
